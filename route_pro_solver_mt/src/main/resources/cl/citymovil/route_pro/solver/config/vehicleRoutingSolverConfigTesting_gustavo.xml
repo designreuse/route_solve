@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<solver>
+   <!--<environmentMode>FAST_ASSERT</environmentMode> -->
+   <solutionClass>cl.citymovil.route_pro.solver.domain.VehicleRoutingSolution</solutionClass>
+   <entityClass>cl.citymovil.route_pro.solver.domain.Standstill</entityClass>
+   <entityClass>cl.citymovil.route_pro.solver.domain.Customer</entityClass>
+   <scoreDirectorFactory>
+      <scoreDefinitionType>HARD_SOFT</scoreDefinitionType>
+      <scoreDrl>/cl/citymovil/route_pro/solver/config/vehicleRoutingScoreRules.drl</scoreDrl>
+      <initializingScoreTrend>ONLY_DOWN</initializingScoreTrend>
+   </scoreDirectorFactory>
+   <termination>
+      <secondsSpentLimit>60</secondsSpentLimit>
+   </termination>
+   <constructionHeuristic>
+      <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+      <forager>
+         <pickEarlyType>FIRST_FEASIBLE_SCORE_OR_NON_DETERIORATING_HARD</pickEarlyType>
+      </forager>
+   </constructionHeuristic>
+   <localSearch>
+      <termination>
+         <unimprovedSecondsSpentLimit>300</unimprovedSecondsSpentLimit>
+      </termination>
+      <unionMoveSelector>
+         <changeMoveSelector>
+            <entitySelector id="entitySelector1" />
+            <valueSelector>
+               <nearbySelection>
+                  <originEntitySelector mimicSelectorRef="entitySelector1" />
+                  <nearbyDistanceMeterClass>cl.citymovil.route_pro.solver.solution.util.CustomerNearbyDistanceMeter</nearbyDistanceMeterClass>
+                  <parabolicDistributionSizeMaximum>400</parabolicDistributionSizeMaximum>
+               </nearbySelection>
+            </valueSelector>
+         </changeMoveSelector>
+         <swapMoveSelector>
+            <entitySelector id="entitySelector2" />
+            <secondaryEntitySelector>
+               <nearbySelection>
+                  <originEntitySelector mimicSelectorRef="entitySelector2" />
+                  <nearbyDistanceMeterClass>cl.citymovil.route_pro.solver.solution.util.CustomerNearbyDistanceMeter</nearbyDistanceMeterClass>
+                  <parabolicDistributionSizeMaximum>400</parabolicDistributionSizeMaximum>
+               </nearbySelection>
+            </secondaryEntitySelector>
+         </swapMoveSelector>
+         
+         <subChainChangeMoveSelector>
+            <selectReversingMoveToo>true</selectReversingMoveToo>
+         </subChainChangeMoveSelector>
+         <subChainSwapMoveSelector>
+            <selectReversingMoveToo>true</selectReversingMoveToo>
+         </subChainSwapMoveSelector>
+
+      </unionMoveSelector>
+    
+<!--       <acceptor> -->
+<!--          <lateAcceptanceSize>7</lateAcceptanceSize> -->
+<!--          <entityTabuSize>10</entityTabuSize> -->
+<!--       </acceptor> -->
+<!--       <forager> -->
+<!--          <acceptedCountLimit>10</acceptedCountLimit> -->
+<!--       </forager> -->
+
+	<acceptor>
+      <lateAcceptanceSize>200</lateAcceptanceSize>
+    </acceptor>
+    <forager>
+      <acceptedCountLimit>1</acceptedCountLimit>
+    </forager>
+    
+   </localSearch>
+</solver>

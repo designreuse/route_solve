@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<solver>
+	<!--<environmentMode>FAST_ASSERT</environmentMode> -->
+	<solutionClass>cl.citymovil.route_pro.solver.domain.VehicleRoutingSolution</solutionClass>
+	<entityClass>cl.citymovil.route_pro.solver.domain.Standstill</entityClass>
+	<entityClass>cl.citymovil.route_pro.solver.domain.Customer</entityClass>
+
+	<scoreDirectorFactory>
+		<scoreDefinitionType>HARD_SOFT_LONG</scoreDefinitionType>
+		<scoreDrl>/cl/citymovil/route_pro/solver/config/vehicleRoutingScoreRules.drl</scoreDrl>
+		<initializingScoreTrend>ONLY_DOWN</initializingScoreTrend>
+	</scoreDirectorFactory>
+	<termination>
+		<secondsSpentLimit>3600</secondsSpentLimit>
+	</termination>
+	<constructionHeuristic>
+		<constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+		<forager>
+			<pickEarlyType>FIRST_FEASIBLE_SCORE_OR_NON_DETERIORATING_HARD</pickEarlyType>
+		</forager>
+	</constructionHeuristic> 
+	<localSearch>
+		<termination>
+			<!--terminationCompositionStyle>OR</terminationCompositionStyle-->
+			<unimprovedSecondsSpentLimit>300</unimprovedSecondsSpentLimit>
+			<!--unimprovedStepCountLimit>20000</unimprovedStepCountLimit-->
+		</termination>
+		<unionMoveSelector>
+			<changeMoveSelector>
+				<entitySelector id="entitySelector1">
+					<entityClass>cl.citymovil.route_pro.solver.domain.Standstill</entityClass>
+				</entitySelector>
+				<valueSelector>
+					<nearbySelection>
+						<originEntitySelector mimicSelectorRef="entitySelector1" />
+						<nearbyDistanceMeterClass>cl.citymovil.route_pro.solver.solution.util.CustomerNearbyDistanceMeter</nearbyDistanceMeterClass>
+						<parabolicDistributionSizeMaximum>90</parabolicDistributionSizeMaximum>
+					</nearbySelection>
+				</valueSelector>
+			</changeMoveSelector>
+			<swapMoveSelector>
+				<entitySelector id="entitySelector2">
+					<entityClass>cl.citymovil.route_pro.solver.domain.Standstill</entityClass>
+				</entitySelector>
+				<secondaryEntitySelector>
+					<nearbySelection>
+						<originEntitySelector mimicSelectorRef="entitySelector2" />
+						<nearbyDistanceMeterClass>cl.citymovil.route_pro.solver.solution.util.CustomerNearbyDistanceMeter</nearbyDistanceMeterClass>
+						<parabolicDistributionSizeMaximum>90</parabolicDistributionSizeMaximum>
+					</nearbySelection>
+				</secondaryEntitySelector>
+			</swapMoveSelector>
+			
+			<pillarSwapMoveSelector>
+				<pillarSelector>
+					<entitySelector>
+						<entityClass>cl.citymovil.route_pro.solver.domain.Standstill</entityClass>
+					</entitySelector>
+					<subPillarEnabled>true</subPillarEnabled>
+					<minimumSubPillarSize>1</minimumSubPillarSize>
+					<maximumSubPillarSize>11</maximumSubPillarSize>
+				</pillarSelector>
+				<secondaryPillarSelector>
+					<entitySelector>
+						<entityClass>cl.citymovil.route_pro.solver.domain.Standstill</entityClass>
+					</entitySelector>
+					<subPillarEnabled>true</subPillarEnabled>
+					<minimumSubPillarSize>1</minimumSubPillarSize>
+					<maximumSubPillarSize>11</maximumSubPillarSize>
+				</secondaryPillarSelector>
+			</pillarSwapMoveSelector>
+
+			<subChainChangeMoveSelector>
+			  <minimumSubChainSize>2</minimumSubChainSize>
+			  <maximumSubChainSize>3</maximumSubChainSize>
+				<selectReversingMoveToo>true</selectReversingMoveToo>
+			</subChainChangeMoveSelector>
+			<subChainSwapMoveSelector>
+				<minimumSubChainSize>2</minimumSubChainSize>
+				<maximumSubChainSize>3</maximumSubChainSize>
+				<selectReversingMoveToo>true</selectReversingMoveToo>
+			</subChainSwapMoveSelector>
+		</unionMoveSelector>
+		<acceptor>
+			<!--lateAcceptanceSize>7</lateAcceptanceSize-->
+			<simulatedAnnealingStartingTemperature>2hard/100soft</simulatedAnnealingStartingTemperature>
+			<!--lateAcceptanceSize>877</lateAcceptanceSize-->
+			<entityTabuSize>11</entityTabuSize>
+			<entityTabuRatio>0.02</entityTabuRatio>
+		</acceptor>
+		<forager>
+			<acceptedCountLimit>5</acceptedCountLimit>
+			<finalistPodiumType>STRATEGIC_OSCILLATION</finalistPodiumType>
+		</forager>
+	</localSearch>
+</solver>

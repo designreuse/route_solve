@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<solver>
+   <solutionClass>cl.citymovil.route_pro.solver.domain.VehicleRoutingSolution</solutionClass>
+   <entityClass>cl.citymovil.route_pro.solver.domain.Standstill</entityClass>
+   <entityClass>cl.citymovil.route_pro.solver.domain.Customer</entityClass>
+ 
+  <scoreDirectorFactory>
+    <scoreDefinitionType>HARD_SOFT</scoreDefinitionType>
+    <scoreDrl>/cl/citymovil/route_pro/solver/config/vehicleRoutingScoreRules.drl</scoreDrl>
+    <initializingScoreTrend>ONLY_DOWN</initializingScoreTrend>
+  </scoreDirectorFactory>
+ 
+  <termination>
+    <secondsSpentLimit>60</secondsSpentLimit>
+  </termination>
+  <constructionHeuristic>
+    <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+  </constructionHeuristic>
+  <localSearch>
+    <unionMoveSelector>
+      <changeMoveSelector/>
+      <swapMoveSelector/>
+      <subChainChangeMoveSelector>
+        <selectReversingMoveToo>true</selectReversingMoveToo>
+      </subChainChangeMoveSelector>
+      <subChainSwapMoveSelector>
+        <selectReversingMoveToo>true</selectReversingMoveToo>
+      </subChainSwapMoveSelector>
+    </unionMoveSelector>
+    <acceptor>
+      <lateAcceptanceSize>200</lateAcceptanceSize>
+    </acceptor>
+    <forager>
+      <acceptedCountLimit>1</acceptedCountLimit>
+    </forager>
+  </localSearch>
+</solver>

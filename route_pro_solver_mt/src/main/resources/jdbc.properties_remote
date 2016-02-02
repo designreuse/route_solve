@@ -1,0 +1,65 @@
+#RoutePro Ecocapital
+jdbc.driverClassName=com.mysql.jdbc.Driver
+jdbc.url=jdbc:mysql://aa1xi72hqqkenrr.cy0ciwqvgbba.sa-east-1.rds.amazonaws.com:3306/route_pro_ecocapital
+jdbc.username=ecocapital
+jdbc.password=pa55w0rd
+hibernate.dialect=org.hibernate.dialect.MySQLDialect
+
+#LOCALHOST MELON
+jdbc.driverClassName=com.mysql.jdbc.Driver
+jdbc.url=jdbc:mysql://localhost:3306/route_pro_melon
+jdbc.username=root
+jdbc.password=password
+hibernate.dialect=org.hibernate.dialect.MySQLDialect
+
+
+#LOCALHOST DEMO
+jdbc.driverClassName=com.mysql.jdbc.Driver
+jdbc.url=jdbc:mysql://localhost:3306/route_pro_demo
+jdbc.username=root
+jdbc.password=password
+hibernate.dialect=org.hibernate.dialect.MySQLDialect
+
+
+#LOCALHOST ECOCAPITAL
+jdbc.driverClassName=com.mysql.jdbc.Driver
+jdbc.url=jdbc:mysql://localhost:3306/route_pro_ecocapital
+jdbc.username=root
+jdbc.password=password
+hibernate.dialect=org.hibernate.dialect.MySQLDialect
+
+#RoutePro DEMO
+jdbc.driverClassName=com.mysql.jdbc.Driver
+jdbc.url=jdbc:mysql://aas0ez2zsl0wmd.cy0ciwqvgbba.sa-east-1.rds.amazonaws.com:3306/route_pro_demo
+jdbc.username=root
+jdbc.password=password
+hibernate.dialect=org.hibernate.dialect.MySQLDialect
+
+#RoutePro TEST
+jdbc.driverClassName=com.mysql.jdbc.Driver
+jdbc.url=jdbc:mysql://aas0ez2zsl0wmd.cy0ciwqvgbba.sa-east-1.rds.amazonaws.com:3306/route_pro
+jdbc.username=root
+jdbc.password=password
+hibernate.dialect=org.hibernate.dialect.MySQLDialect
+
+#RoutePro MELON
+jdbc.driverClassName=com.mysql.jdbc.Driver
+jdbc.url=jdbc:mysql://aas0ez2zsl0wmd.cy0ciwqvgbba.sa-east-1.rds.amazonaws.com:3306/route_pro_melon
+jdbc.username=root
+jdbc.password=password
+hibernate.dialect=org.hibernate.dialect.MySQLDialect
+
+#RoutePro KARMAC
+jdbc.driverClassName=com.mysql.jdbc.Driver
+jdbc.url=jdbc:mysql://aas0ez2zsl0wmd.cy0ciwqvgbba.sa-east-1.rds.amazonaws.com:3306/route_pro_karmac
+jdbc.username=root
+jdbc.password=password
+hibernate.dialect=org.hibernate.dialect.MySQLDialect
+
+
+jpa.database = MYSQL
+hibernate.generate_statistics = true
+hibernate.show_sql = true
+hibernate.hbm2ddl.auto = update
+jpa.showSql = true
+jpa.generateDdl = true

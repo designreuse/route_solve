@@ -1,0 +1,177 @@
+/*
+ * Copyright 2012 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.optaplanner.examples.tsp.solver;	
+    dialect "java"
+
+import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScoreHolder;
+
+import cl.citymovil.route_pro.solver.domain.Depot;
+import cl.citymovil.route_pro.solver.domain.Location;
+import cl.citymovil.route_pro.solver.domain.Vehicle;
+import cl.citymovil.route_pro.solver.domain.VehicleRoutingSolution;
+import cl.citymovil.route_pro.solver.domain.Customer;
+
+global HardSoftScoreHolder scoreHolder;
+
+// ############################################################################
+// Hard constraints
+// ############################################################################
+
+rule "vehicleCapacity"
+    when
+        $vehicle : Vehicle($capacity : capacity)
+        $demandTotal : Number(intValue > $capacity) from accumulate(
+            Customer(
+                vehicle == $vehicle,
+                $demand : demand),
+            sum($demand)
+        )
+    then
+        scoreHolder.addHardConstraintMatch(kcontext, ($capacity - $demandTotal.intValue()) *3600*10);
+end
+
+/*
+rule "maxCustomersPerVehicle"
+    when
+        $vehicle : Vehicle()
+        $totalCustomers : Number(intValue > 100) from accumulate(
+            Customer(
+                vehicle == $vehicle),
+            sum(1)
+        )
+    then
+        scoreHolder.addHardConstraintMatch(kcontext, -$totalCustomers.intValue());
+end
+*/
+
+
+
+/*
+rule "maxDistanceBetweenCustomers"
+    when
+    	$customer : Customer()
+    	$previousCustomer : Customer (nextCustomer == $customer,$customer.getMetersFromPreviousStandstill()  >  5000)
+    	
+    then
+        scoreHolder.addHardConstraintMatch(kcontext, -100);
+        //System.out.println("distancia  "+ $customer.getMetersFromPreviousStandstill() );
+end
+*/
+
+
+/*
+rule "maxAngleBetweenCustomers"
+    when
+    	$customer : Customer()
+    	$previousCustomer : Customer (nextCustomer == $customer, $customer.getAngleDifferenceToNextCustomer()  >  90)
+    	
+    then
+        scoreHolder.addHardConstraintMatch(kcontext, -10 );
+end
+*/
+
+// ############################################################################
+// TimeWindowed: extra hard constraints
+// ############################################################################
+
+rule "arrivalAfterCustomerDueTime"
+    when
+        Customer(dueTime < arrivalTime, $dueTime : dueTime, $arrivalTime : arrivalTime)
+    then
+        scoreHolder.addHardConstraintMatch(kcontext, ($dueTime - $arrivalTime.intValue()));
+end
+
+/*
+rule "arrivalAfterVehicleDueTime"
+    when
+    	$vehicle : Vehicle($vehicleDueTime : dueTime)
+    	$customer : Customer(vehicle == $vehicle,$customerArrivalTime : arrivalTime,  $vehicleDueTime < $customerArrivalTime)
+        not Customer(previousStandstill == $customer)
+        
+    then
+        scoreHolder.addHardConstraintMatch(kcontext, ( ($vehicleDueTime - $customerArrivalTime  ) ) );
+        //System.out.println("vehicleDueTime  "+ $vehicleDueTime );
+end
+*/
+
+// ############################################################################
+// Soft constraints
+// ############################################################################
+
+rule "distanceFromPreviousStandstill"
+    when
+        $customer : Customer(previousStandstill != null, $distanceFromPreviousStandstill : metersFromPreviousStandstill)
+    then
+        scoreHolder.addSoftConstraintMatch(kcontext, - (int)$distanceFromPreviousStandstill);
+end
+
+
+
+rule "distanceFromLastCustomerToDepot"
+    when
+        $customer : Customer(previousStandstill != null)
+        not Customer(previousStandstill == $customer)
+    then
+        scoreHolder.addSoftConstraintMatch(kcontext, - (int)$customer.getMetersTo($customer.getVehicle()));
+        //logLastCustomer(drools, $customer);
+end
+
+
+
+// ############################################################################
+// Soft constraints related to trips
+// ############################################################################
+
+
+rule "chooseMarkVehicles"
+    when
+        $vehicle : Vehicle(isTrip == false)
+        $customer : Customer(vehicle == $vehicle, $demand : demand)
+    then
+        scoreHolder.addSoftConstraintMatch(kcontext, -((int)$demand * 1000) );
+end
+
+
+
+/*
+rule "balancedKilometersPerVehicle"
+    when
+        $vehicle : Vehicle()
+        $totalKilometers : Number(intValue>0) from accumulate(
+        
+        Customer(vehicle == $vehicle, previousStandstill != null, $distanceFromPreviousStandstill : metersFromPreviousStandstill),
+            sum($distanceFromPreviousStandstill)
+        )
+        
+    then
+        scoreHolder.addSoftConstraintMatch(kcontext, - ($totalKilometers.intValue() * $totalKilometers.intValue())/1000 );
+end
+*/
+
+/*
+rule "balancedCustomerPerVehicle"
+    when
+        $vehicle : Vehicle()
+        $totalCustomers : Number() from accumulate(
+            Customer(
+                vehicle == $vehicle),
+            sum(1)
+        )
+    then
+        scoreHolder.addSoftConstraintMatch(kcontext, - $totalCustomers * $totalCustomers);
+end
+*/

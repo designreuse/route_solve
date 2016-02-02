@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<solver>
+
+ 	<scanAnnotatedClasses>
+ 		<packageInclude>cl.citymovil.vrp.domain</packageInclude>
+ 	</scanAnnotatedClasses>
+
+	<!--<environmentMode>FAST_ASSERT</environmentMode> -->
+<!-- 	<solutionClass>cl.citymovil.vrp.domain.VehicleRoutingSolution</solutionClass> -->
+<!-- 	<entityClass>cl.citymovil.vrp.domain.Standstill</entityClass> -->
+<!-- 	<entityClass>cl.citymovil.vrp.domain.Customer</entityClass> -->
+
+	<scoreDirectorFactory>
+		<scoreDefinitionType>HARD_SOFT</scoreDefinitionType>
+		<scoreDrl>/cl/citymovil/vrpsolver/config/vehicleRoutingScoreRules.drl</scoreDrl>
+		<initializingScoreTrend>ONLY_DOWN</initializingScoreTrend>
+	</scoreDirectorFactory>
+
+	<termination>
+		<secondsSpentLimit>10</secondsSpentLimit>
+	</termination>
+	<constructionHeuristic>
+		<constructionHeuristicType>FIRST_FEASIBLE_SCORE_OR_NON_DETERIORATING_HARD</constructionHeuristicType>
+	</constructionHeuristic>
+
+	<localSearch>
+<!-- 		<unionMoveSelector> -->
+<!-- 			<changeMoveSelector /> -->
+<!-- 			<swapMoveSelector /> -->
+<!-- 			<subChainChangeMoveSelector> -->
+<!-- 				<selectReversingMoveToo>true</selectReversingMoveToo> -->
+<!-- 			</subChainChangeMoveSelector> -->
+<!-- 			<subChainSwapMoveSelector> -->
+<!-- 				<selectReversingMoveToo>true</selectReversingMoveToo> -->
+<!-- 			</subChainSwapMoveSelector> -->
+<!-- 		</unionMoveSelector> -->
+
+<unionMoveSelector>
+         <changeMoveSelector>
+            <entitySelector id="entitySelector1" />
+            <valueSelector>
+               <nearbySelection>
+                  <originEntitySelector mimicSelectorRef="entitySelector1" />
+                  <nearbyDistanceMeterClass>cl.citymovil.route_pro.solver.solution.util.CustomerNearbyDistanceMeter</nearbyDistanceMeterClass>
+                  <parabolicDistributionSizeMaximum>40</parabolicDistributionSizeMaximum>
+               </nearbySelection>
+            </valueSelector>
+         </changeMoveSelector>
+         <swapMoveSelector>
+            <entitySelector id="entitySelector2" />
+            <secondaryEntitySelector>
+               <nearbySelection>
+                  <originEntitySelector mimicSelectorRef="entitySelector2" />
+                  <nearbyDistanceMeterClass>cl.citymovil.route_pro.solver.solution.util.CustomerNearbyDistanceMeter</nearbyDistanceMeterClass>
+                  <parabolicDistributionSizeMaximum>40</parabolicDistributionSizeMaximum>
+               </nearbySelection>
+            </secondaryEntitySelector>
+         </swapMoveSelector>
+         
+         <subChainChangeMoveSelector>
+            <selectReversingMoveToo>true</selectReversingMoveToo>
+         </subChainChangeMoveSelector>
+         <subChainSwapMoveSelector>
+            <selectReversingMoveToo>true</selectReversingMoveToo>
+         </subChainSwapMoveSelector>
+
+      </unionMoveSelector>
+
+
+		<acceptor>
+			<entityTabuSize>1000</entityTabuSize>
+			<lateAcceptanceSize>200</lateAcceptanceSize>
+		</acceptor>
+		<forager>
+			<acceptedCountLimit>1</acceptedCountLimit>
+		</forager>
+	</localSearch>
+
+</solver>
