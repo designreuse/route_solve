@@ -24,6 +24,16 @@ public class DistanceTime {
 	private long destination;
 	private long distance;
 	private long duration;
+	
+	public DistanceTime(){}
+
+	public DistanceTime(long origin, long destination, long distance, long duration)
+	{
+		this.origin = origin;
+		this.destination = destination;
+		this.distance = distance;
+		this.duration = duration;
+	}
 
 	public String getDistanceTimeMatrixId() {
 		return distanceTimeMatrixId;
